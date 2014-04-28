@@ -30,12 +30,12 @@ module Spree
 
       let(:package) { double(Stock::Package,
                              order: mock_model(Order),
-                             contents: [Stock::Package::ContentItem.new(1,variant1, 4),
-                                        Stock::Package::ContentItem.new(2,variant2, 6)]) }
+                             contents: [Stock::Package::ContentItem.new(variant1, 4),
+                                        Stock::Package::ContentItem.new(variant2, 6)]) }
 
       let(:package2) { double(Stock::Package,
                               order: mock_model(Order),
-                              contents: [Stock::Package::ContentItem.new(1,variant3,1)]
+                              contents: [Stock::Package::ContentItem.new(variant3,1)]
         )}
 
       it "correctly select the default weight shipping price when no weight on the variant", :focus => true do
