@@ -42,51 +42,52 @@ module Spree
       end
 
       private
-      def clean_costs_string
-        preferred_costs_string.strip
-      end
-
-      def costs_string_valid?
-        !clean_costs_string.empty? &&
-        clean_costs_string.count(':') > 0 &&
-        clean_costs_string.split(/\:|\n/).size.even? &&
-        clean_costs_string.split(/\:|\n/).all? { |s | s.strip.match(/^\d|\.+$/) }
-      end
-
-      def item_oversized?(item)
-        return false if preferred_max_item_size == 0
-
-        variant = item.variant
-        sizes = [ variant.width || 0, variant.depth || 0, variant.height || 0 ]
-
-        sizes.max > preferred_max_item_size
-      end
-
-      def order_overweight?(content_items)
-        total_weight = total_weight(content_items)
-        hash = costs_string_to_hash(clean_costs_string)
-
-        total_weight > hash.keys.max
-      end
-
-      def costs_string_to_hash(costs_string)
-        costs = {}
-        costs_string.split.each do |cost_string|
-          values = cost_string.strip.split(':')
-          costs[values[0].strip.to_f] = values[1].strip.to_f
+      
+        def clean_costs_string
+          preferred_costs_string.strip
         end
 
-        costs
-      end
-
-      def total_weight(contents)
-        weight = 0
-        contents.each do |item|          
-          weight += item.quantity * (item.variant.weight > 0.0 ? item.variant.weight : preferred_default_weight)
+        def costs_string_valid?
+          !clean_costs_string.empty? &&
+          clean_costs_string.count(':') > 0 &&
+          clean_costs_string.split(/\:|\n/).size.even? &&
+          clean_costs_string.split(/\:|\n/).all? { |s | s.strip.match(/^\d|\.+$/) }
         end
-        
-        weight
+
+        def item_oversized?(item)
+          return false if preferred_max_item_size == 0
+
+          variant = item.variant
+          sizes = [ variant.width || 0, variant.depth || 0, variant.height || 0 ]
+
+          sizes.max > preferred_max_item_size
+        end
+
+        def order_overweight?(content_items)
+          total_weight = total_weight(content_items)
+          hash = costs_string_to_hash(clean_costs_string)
+
+          total_weight > hash.keys.max
+        end
+
+        def costs_string_to_hash(costs_string)
+          costs = {}
+          costs_string.split.each do |cost_string|
+            values = cost_string.strip.split(':')
+            costs[values[0].strip.to_f] = values[1].strip.to_f
+          end
+
+          costs
+        end
+
+        def total_weight(contents)
+          weight = 0
+          contents.each do |item|          
+            weight += item.quantity * (item.variant.weight > 0.0 ? item.variant.weight : preferred_default_weight)
+          end
+          
+          weight
+        end
       end
     end
-  end
 end
